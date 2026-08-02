@@ -1,11 +1,1 @@
-package:
-  name: nullable
-  dependencies:
-    - assert
-    - effect
-    - functions
-    - maybe
-    - prelude
-workspace:
-  packageSet:
-    registry: 73.3.0
+spago.go.yaml
