@@ -13,9 +13,11 @@ import Prelude
 
 import Data.Eq (class Eq1)
 import Data.Function (on)
-import Data.Function.Uncurried (Fn3, runFn3)
+import Data.Function.Uncurried (Fn3, runFn3, mkFn3)
 import Data.Maybe (Maybe(..), maybe)
 import Data.Ord (class Ord1)
+import Foreign (isNull)
+import Unsafe.Coerce (unsafeCoerce)
 
 -- | A nullable type. This type constructor is intended to be used for
 -- | interoperating with JavaScript functions which accept or return null
@@ -48,7 +50,9 @@ type role Nullable representational
 -- | The null value.
 foreign import null :: forall a. Nullable a
 
-foreign import nullable :: forall a r. Fn3 (Nullable a) r (a -> r) r
+nullable :: forall a r. Fn3 (Nullable a) r (a -> r) r
+nullable = mkFn3 \n r f ->
+  if isNull (unsafeCoerce n) then r else f (unsafeCoerce n)
 
 -- | Wrap a non-null value.
 foreign import notNull :: forall a. a -> Nullable a
